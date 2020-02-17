@@ -1,4 +1,4 @@
-import sys, random, string, serial
+import sys, serial
 
 # Import des bibliothèques de Qt5
 from PyQt5.QtWidgets import QApplication
@@ -9,18 +9,29 @@ from PyQt5.QtCore import QTimer
 from Ui_MainWin import Ui_MainWindow
 # Interface créée avec Qt Creator au format .ui et convertie en classe python avec la commande :
 # pyuic5 mainwindow.ui -o Ui_MainWin.py
+import StateMachines as fsm
+
+# Paramètres de la partie
+current_difficulty = 0
+# Création de la progression des classes de difficulté
+difficulties_handler = [fsm.SecretBoxEasy,
+                        fsm.SecretBoxMedium,
+                        fsm.SecretBoxHard,
+                        fsm.SecretBoxVeryHard]
+# Création des intervalles de timer en fonction de la diffuculté
+speed_by_difficulty = [4000, 3000, 1500, 1000]
 
 class MainWindow:
-    '''Classe de la fenêtre principale de mon ClipFlow Simulator'''
+    """Classe de la fenêtre principale de l'application"""
     def __init__(self):
-        '''Constructeur de la classe MainWindow'''
+        """Constructeur de la classe MainWindow"""
 
         # Initialisation de l'interface graphique
         self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
 
-        # Création du timer
+        # Création du timer permettant l'exécution de la machine à intervalle régulier
         self._timer = QTimer()
 
         # Connexion des signaux
@@ -38,47 +49,16 @@ class MainWindow:
             self.ui.lbl_status.setText("The box is OPENED !")
 
     def on_button_click(self):
-        self._timer.start(5000)
+        self._timer.start(speed_by_difficulty[current_difficulty])
         self.ui.lbl_status.setText("Started !")
 
 
-class SecretBox:
-    def __init__(self):
-        self._handlers = {'CLOSED': self.state_closed,'OPENED': self.state_opened}
-        self.next_state = 'CLOSED'
-        self._passcode = "".join(random.choices(string.ascii_letters, k=4))
-
-    def state_closed(self, serial_com):
-        incoming_message = serial_com.readline().decode('ascii')
-        print(incoming_message)
-        if incoming_message == self._passcode:
-            serial_com.write(b"Good Game !")
-            return 'OPENED'
-        else:
-            serial_com.write(self._passcode.encode('ascii'))
-            return 'CLOSED'
-
-    def state_opened(self, serial_com):
-        incoming_message = serial_com.readline().decode('ascii')
-
-        if incoming_message == self._passcode:
-            return 'CLOSED'
-
-        serial_com.write(b"I'm opened !")
-        return 'OPENED'
-
-    def run(self, serial_com):
-        handler = self._handlers[self.next_state]
-        self.next_state = handler(serial_com)
-
-        return self.next_state
-
-
 if __name__ == "__main__":
-    print("Starting...")
+    print("Starting Application")
     app = QApplication(sys.argv)
+
     # Création de la machine à état
-    box = SecretBox()
+    box = fsm.SecretBoxEasy()
 
     # Création de la communication série
     serial_com = serial.Serial('COM2', baudrate=9600, timeout=1)
