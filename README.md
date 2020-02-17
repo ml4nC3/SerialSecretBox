@@ -8,5 +8,12 @@ The application also requires following librairies installed :
 - PyQt5
 - PySerial
 
+Additionnaly you'll need softwares to communicate through serial port :
+- Virtual Serial Port Emulator (VSPE) : http://www.eterlogic.com/Products.VSPE.html
+- Some Serial Port sniffer like freeserialanalyzer (not tested myself) with ability to connect to a port and receive/send message on that port.
+
 # Testing
-In order to test this application you'll need a serial port virtualizer like VSPE and another application that allows you to receive and write messages on serial port.
+Testing procedure : 
+- Open VSPE, create a new pair and defines port numbers (ex COM1 >> COM2)
+- Open your sniffer and connect it to COM1
+- Start SerialSecretBox, clicks on start and interract through serial port in order to make it change state.
