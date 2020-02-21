@@ -17,3 +17,4 @@ Testing procedure :
 - Open VSPE, create a new pair and defines port numbers (ex COM1 >> COM2)
 - Open your sniffer and connect it to COM1
 - Start SerialSecretBox, clicks on start and interract through serial port in order to make it change state.
+From level 1 or 2 you'll need an interracting application.
