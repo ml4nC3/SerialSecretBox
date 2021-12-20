@@ -1,4 +1,6 @@
-import sys, serial
+# coding=utf-8
+import sys
+import serial
 
 # Import des bibliothèques de Qt5
 from PyQt5.QtWidgets import QApplication
@@ -6,8 +8,6 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QTimer
 
 # Import de la définition de l'interface
-from serial import Serial
-
 from Ui_MainWin import Ui_MainWindow
 # Interface créée avec Qt Creator au format .ui et convertie en classe python avec la commande :
 # pyuic5 mainwindow.ui -o Ui_MainWin.py
@@ -24,7 +24,6 @@ speed_by_difficulty = [4000, 3000, 2500, 1000]
 
 class MainWindow:
     """Classe de la fenêtre principale de l'application"""
-    serial_com: Serial
 
     def __init__(self):
         """Constructeur de la classe MainWindow"""
